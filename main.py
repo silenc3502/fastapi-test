@@ -18,6 +18,45 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+import threading
+import datetime
+import time
+
+import random
+
+def every_friday_night_timer_thread():
+    while True:
+        # 현재 시간을 가져옵니다.
+        now = datetime.datetime.now()
+
+        # 다음 금요일 밤 7시의 시간을 계산합니다.
+        next_friday = now + datetime.timedelta(days=(4 - now.weekday() + 7) % 7)
+        next_friday_7pm = datetime.datetime(next_friday.year, next_friday.month, next_friday.day, 19, 0, 0)
+
+        # 다음 금요일 밤 7시까지 대기합니다.
+        time.sleep((next_friday_7pm - now).total_seconds())
+
+        # 타이머 동작 코드를 여기에 추가합니다.
+        print("금요일 밤 7시입니다!")
+
+backup_data = 0
+current_data = 0
+
+def every_10s_timer_thread():
+    global current_data
+
+    while True:
+        print("10초가 지났습니다!")
+        backup_data = current_data
+
+        time.sleep(10)
+        current_data = random.randint(1, 10)
+        print(current_data)
+
+# 타이머 스레드를 생성하고 시작합니다.
+thread = threading.Thread(target=every_10s_timer_thread)
+thread.start()
+
 database.models.Base.metadata.create_all(bind=database.base.engine)
 
 app = FastAPI()
@@ -75,6 +114,11 @@ def python_server_response():
     print("It's operate")
     summary = {'name': 'Hello', 'major': 'C++'}
     return summary
+
+@app.get('/request-int-data')
+def python_int_response():
+    print("It's int response")
+    return current_data
 
 @app.get('/create-virtual-credit')
 def create_virtual_credit():
@@ -225,3 +269,4 @@ def read_excel():
 
     target = df['성별']
     print(target)
+
