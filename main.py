@@ -24,6 +24,9 @@ import time
 
 import random
 
+from router.todo_router import todo_router
+
+
 def every_friday_night_timer_thread():
     while True:
         # 현재 시간을 가져옵니다.
@@ -270,3 +273,4 @@ def read_excel():
     target = df['성별']
     print(target)
 
+app.include_router(todo_router)
