@@ -24,6 +24,7 @@ import time
 
 import random
 
+from pydantic_test.pydantic_router import pydantic_router
 from router.todo_router import todo_router
 
 
@@ -42,8 +43,10 @@ def every_friday_night_timer_thread():
         # 타이머 동작 코드를 여기에 추가합니다.
         print("금요일 밤 7시입니다!")
 
+
 backup_data = 0
 current_data = 0
+
 
 def every_10s_timer_thread():
     global current_data
@@ -56,6 +59,7 @@ def every_10s_timer_thread():
         current_data = random.randint(1, 10)
         print(current_data)
 
+
 # 타이머 스레드를 생성하고 시작합니다.
 thread = threading.Thread(target=every_10s_timer_thread)
 thread.start()
@@ -63,6 +67,7 @@ thread.start()
 database.models.Base.metadata.create_all(bind=database.base.engine)
 
 app = FastAPI()
+
 
 def get_db():
     db = database.base.SessionLocal()
@@ -105,6 +110,7 @@ def create_user(testData: database.schemas.TestDataCreate, db: Session = Depends
     print('DB Session ', db)
     return database.crud.create_test_data(db=db, testData=testData)
 
+
 @app.get("/device-info")
 def print_device_info():
     print('device info: ', device_lib.list_local_devices())
@@ -112,16 +118,19 @@ def print_device_info():
     device_info = [{'name': device.name, 'device_type': device.device_type} for device in devices]
     return device_info
 
+
 @app.get('/request-data')
 def python_server_response():
     print("It's operate")
     summary = {'name': 'Hello', 'major': 'C++'}
     return summary
 
+
 @app.get('/request-int-data')
 def python_int_response():
     print("It's int response")
     return current_data
+
 
 @app.get('/create-virtual-credit')
 def create_virtual_credit():
@@ -157,6 +166,7 @@ def create_virtual_credit():
     })
 
     print(data)
+
 
 @app.get('/credit-evaluation')
 def credit_evaluation():
@@ -200,6 +210,7 @@ def credit_evaluation():
     # 정확도를 계산합니다.
     accuracy = accuracy_score(y_test, y_pred)
     print("Accuracy:", accuracy)
+
 
 @app.get('/adv-credit-evaluation')
 def credit_evaluation():
@@ -246,6 +257,7 @@ def credit_evaluation():
     accuracy = accuracy_score(y_test, y_pred)
     print("Accuracy:", accuracy)
 
+
 @app.get('/make-excel')
 def make_excel():
     # 데이터 프레임 생성
@@ -257,6 +269,7 @@ def make_excel():
     # 엑셀 파일 경로 지정하여 저장
     file_path = './data.xlsx'
     df.to_excel(file_path, index=False)
+
 
 @app.get('/read-excel')
 def read_excel():
@@ -273,4 +286,6 @@ def read_excel():
     target = df['성별']
     print(target)
 
+
 app.include_router(todo_router)
+app.include_router(pydantic_router)
