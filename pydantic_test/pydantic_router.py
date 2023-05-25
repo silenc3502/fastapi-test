@@ -4,10 +4,10 @@ from pydantic import BaseModel
 pydantic_router = APIRouter()
 
 class TestBook(BaseModel):
-    id: int
-    name: str
-    publishers: str
-    isbn: str
+        id: int
+        name: str
+        publishers: str
+        isbn: str
 
 test_book = []
 
@@ -17,3 +17,8 @@ async def pydantic_test(book: TestBook) -> dict:
     return {
         "message": "성공적으로 추가됨"
     }
+
+
+@pydantic_router.get("/request-entity-data")
+async def request_entity_data(id: int) -> TestBook:
+    return test_book[id - 1]
