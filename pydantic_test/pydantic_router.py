@@ -19,6 +19,6 @@ async def pydantic_test(book: TestBook) -> dict:
     }
 
 
-@pydantic_router.get("/request-entity-data")
+@pydantic_router.get("/request-entity-data/{id}")
 async def request_entity_data(id: int) -> TestBook:
     return test_book[id - 1]
