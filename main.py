@@ -287,5 +287,16 @@ def read_excel():
     print(target)
 
 
+@app.get('/seperate-excel')
+def seperate_excel():
+    df = pd.read_excel('customer_data.xlsx')
+
+    total_rows = df.shape[0]
+
+    for i in range(0, total_rows, 10000):
+        chunk = df[i:i + 10000]
+        chunk.to_excel(f'chunk_{i + 1}-{i + len(chunk)}.xlsx', index=False)
+
+
 app.include_router(todo_router)
 app.include_router(pydantic_router)
